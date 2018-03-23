@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace OhmValueCalcSvc
 {
     class Program
     {
@@ -20,6 +20,7 @@ namespace ConsoleApp1
             {
                 IOhmValueCalculator ohmValueCalculator = new OhmValueCalculator();
                 Console.WriteLine(ohmValueCalculator.CalculateOhmValue("YELLOW", "VOILET", "RED", "GOLD"));
+                
             }
             catch (Exception ex)
             {

@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConsoleApp1
+namespace OhmValueCalcSvc
 {
     public class OhmValueCalculator : IOhmValueCalculator
     {
         List<ElectronicColorCode> colorCodes;
 
+        /// <summary>
+        /// Class constructor
+        /// </summary>
         public OhmValueCalculator()
         {
             colorCodes = new List<ElectronicColorCode>()
@@ -30,6 +31,14 @@ namespace ConsoleApp1
             };
         }
 
+        /// <summary>
+        /// Calculates the Ohm value of a resistor based on the band colors
+        /// </summary>
+        /// <param name="bandAColor"></param>
+        /// <param name="bandBColor"></param>
+        /// <param name="bandCColor"></param>
+        /// <param name="bandDColor"></param>
+        /// <returns>Returns the range of the resistance values</returns>
         public ResistanceValues CalculateOhmValue(string bandAColor, string bandBColor, string bandCColor, string bandDColor)
         {
             ElectronicColorCode primaryColor = colorCodes.Where(c => c.Color.ToUpper().Equals(bandAColor.ToUpper())).FirstOrDefault();
@@ -44,18 +53,19 @@ namespace ConsoleApp1
            
 
             if (primaryColor == null)
-                return null;
+                ohmValue =0;
+            else
+                ohmValue = primaryColor.SignificantFigure;
 
-            ohmValue = primaryColor.SignificantFigure;
-
+            //Add the secondary color significant figure to OhmValue
             if (secondaryColor != null)
                 ohmValue = (ohmValue * 10) + secondaryColor.SignificantFigure;
 
-            //calculate Multiplier
+            //Calculate Multiplier
             if (multiplierColor != null)
                 ohmValue = ohmValue * (Convert.ToInt64(Math.Pow(10, multiplierColor.Multiplier)));
 
-            //calculate tolerance
+            //Calculate tolerance
             if (toleranceColor != null)
             {
                 toleranceValue = ohmValue * (toleranceColor.Tolerance) / 100;
@@ -75,11 +85,12 @@ namespace ConsoleApp1
             };
 
             return resistanceValue;
-
-            ///return Convert.ToInt32(minOhmValue);
         }
     }
 
+    /// <summary>
+    /// Resistor band values
+    /// </summary>
     public class ElectronicColorCode
     {
         public string Color { get; set; }
@@ -88,6 +99,9 @@ namespace ConsoleApp1
         public double Tolerance { get; set; }
     }
 
+    /// <summary>
+    /// Resistance value range properties
+    /// </summary>
     public class ResistanceValues
     {
         public int minValue { get; set; }

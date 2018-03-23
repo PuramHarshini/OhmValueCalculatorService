@@ -1,38 +1,51 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using ConsoleApp1;
+using OhmValueCalcSvc;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleApp1.Tests
+namespace OhmValueCalcSvc.Tests
 {
     [TestClass()]
     public class OhmValueCalculatorTests
     {
+        IOhmValueCalculator ohmCalcService;
+
+        [TestInitialize]
+        public void Setup()
+        {
+            //begin transaction
+            ohmCalcService = new OhmValueCalculator();            
+        }
+
+        [TestCleanup]
+        public void Cleanup()
+        {
+            //rollback transaction
+        }
+
+        /// <summary>
+        /// Test method passing all the values of the resistor band
+        /// </summary>
         [TestMethod()]
         public void CalculateOhmValuePositiveTest()
         {
             string bandAClr = "Yellow";
             string bandBclr = "Voilet";
             string bandCclr = "Red";
-            string bandDclr = "Gold";
+            string bandDclr = "Gold";               
 
-            OhmValueCalculator resistanceValue = new OhmValueCalculator();
-
-            ResistanceValues actualValue = new ResistanceValues()
-            {
-                minValue = 0,
-                maxValue = 0
-            };
-
-            actualValue = resistanceValue.CalculateOhmValue(bandAClr,bandBclr,bandCclr,bandDclr);
+            ResistanceValues actualValue = ohmCalcService.CalculateOhmValue(bandAClr,bandBclr,bandCclr,bandDclr);
 
             Assert.AreEqual(4465, actualValue.minValue);
             Assert.AreEqual(4935,actualValue.maxValue);
         }
 
+        /// <summary>
+        /// Test method passing none the values of the resistor band
+        /// </summary>
         [TestMethod()]
         public void CalculateOhmValueNegativeTest()
         {
@@ -41,40 +54,31 @@ namespace ConsoleApp1.Tests
             string bandCclr = "";
             string bandDclr = "";
 
-            OhmValueCalculator resistanceValue = new OhmValueCalculator();
-
-            ResistanceValues actualValue = new ResistanceValues()
-            {
-                minValue = 0,
-                maxValue = 0
-            };
-
-            actualValue = resistanceValue.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
+            ResistanceValues actualValue = ohmCalcService.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
             
-            Assert.AreEqual(null, actualValue);
+            Assert.AreEqual(0, actualValue.minValue);
+            Assert.AreEqual(0, actualValue.maxValue);
         }
 
+        /// <summary>
+        /// Test method passing only the primary color of the resistor band
+        /// </summary>
         [TestMethod()]
         public void CalculateOhmValueOnlyPrimaryClrTest()
         {
-            string bandAClr = "Black";
+            string bandAClr = "Yellow";
             string bandBclr = "";
             string bandCclr = "";
             string bandDclr = "";
 
-            OhmValueCalculator resistanceValue = new OhmValueCalculator();
+            ResistanceValues actualValue = ohmCalcService.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
 
-            ResistanceValues actualValue = new ResistanceValues()
-            {
-                minValue = 0,
-                maxValue = 0
-            };
-
-            actualValue = resistanceValue.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
-
-            Assert.AreEqual(actualValue.maxValue, actualValue.minValue);
+            Assert.AreEqual(4,actualValue.maxValue, actualValue.minValue);
         }
 
+        /// <summary>
+        /// Test method without passing the secondary color of the resistor band
+        /// </summary>
         [TestMethod()]
         public void CalculateOhmValueNoSecondaryClrTest()
         {
@@ -83,18 +87,26 @@ namespace ConsoleApp1.Tests
             string bandCclr = "Red";
             string bandDclr = "Gold";
 
-            OhmValueCalculator resistanceValue = new OhmValueCalculator();
-
-            ResistanceValues actualValue = new ResistanceValues()
-            {
-                minValue = 0,
-                maxValue = 0
-            };
-
-            actualValue = resistanceValue.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
+            ResistanceValues actualValue = ohmCalcService.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
 
             Assert.AreEqual(380, actualValue.minValue);
             Assert.AreEqual(420, actualValue.maxValue);
+        }
+
+        /// <summary>
+        /// Test method for a Zero resisitance band
+        /// </summary>
+        [TestMethod()]
+        public void CalculateOhmValueForABlackBandTest()
+        {
+            string bandAClr = "Black";
+            string bandBclr = "";
+            string bandCclr = "";
+            string bandDclr = "";
+            
+            ResistanceValues actualValue = ohmCalcService.CalculateOhmValue(bandAClr, bandBclr, bandCclr, bandDclr);
+
+            Assert.AreEqual(0,actualValue.minValue,actualValue.maxValue);
         }
     }
 }
