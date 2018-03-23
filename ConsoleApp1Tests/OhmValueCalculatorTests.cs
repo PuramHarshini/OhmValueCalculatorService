@@ -16,14 +16,15 @@ namespace OhmValueCalcSvc.Tests
         [TestInitialize]
         public void Setup()
         {
-            //begin transaction
+            //setup data
             ohmCalcService = new OhmValueCalculator();            
         }
 
         [TestCleanup]
         public void Cleanup()
         {
-            //rollback transaction
+            //cleanup
+            ohmCalcService = null;
         }
 
         /// <summary>
