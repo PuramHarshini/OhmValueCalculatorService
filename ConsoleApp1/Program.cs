@@ -19,8 +19,7 @@ namespace OhmValueCalcSvc
             try
             {
                 IOhmValueCalculator ohmValueCalculator = new OhmValueCalculator();
-                Console.WriteLine(ohmValueCalculator.CalculateOhmValue("YELLOW", "VOILET", "RED", "GOLD"));
-                
+                Console.WriteLine(ohmValueCalculator.CalculateOhmValue("YELLOW", "VOILET", "RED", "GOLD"));                
             }
             catch (Exception ex)
             {
